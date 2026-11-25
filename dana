@@ -1,6 +1,6 @@
 const STORAGE_KEY="myfinance_v1";
 const CATEGORIES=["Perangkat elektronik","Makan","Snack / jajan","SkinCare & Make up","Pakaian","Stationery","Spending hobby","Kebutuhan rumah tangga","Kuota internet","Tagihan bulanan","Sembako","Self reward","Ngasih orang tua","Bayar kuliah","Tidak terduga"];
-const DEFAULT_ACCOUNTS=[{id:"bri",name:"Bank BRI",type:"Bank",icon:"🏦",logo:"assets/bri.png",opening:0},{id:"seabank",name:"SeaBank",type:"Bank",icon:"🌊",logo:"assets/seabank.png",opening:0},{id:"gopay",name:"GoPay",type:"E-Wallet",icon:"🟢",logo:"assets/gopay.webp",opening:0},{id:"dana",name:"DANA",type:"E-Wallet",icon:"🔵",logo:"assets/dana.jpg",opening:0},{id:"cash",name:"Cash",type:"Tunai",icon:"💵",logo:"assets/cash.png",opening:0}];
+const DEFAULT_ACCOUNTS=[{id:"bri",name:"Bank BRI",type:"Bank",icon:"🏦",logo:"bri.png",opening:0},{id:"seabank",name:"SeaBank",type:"Bank",icon:"🌊",logo:"seabank.png",opening:0},{id:"gopay",name:"GoPay",type:"E-Wallet",icon:"🟢",logo:"gopay.webp",opening:0},{id:"dana",name:"DANA",type:"E-Wallet",icon:"🔵",logo:"dana.jpg",opening:0},{id:"cash",name:"Cash",type:"Tunai",icon:"💵",logo:"cash.png",opening:0}];
 let state=loadState(), activeType="expense", toastTimer;
 DEFAULT_ACCOUNTS.forEach(def=>{const account=state.accounts.find(a=>a.id===def.id);if(account){account.logo=def.logo;account.icon=def.icon;}});
 
@@ -20,7 +20,7 @@ function balances(){const b={};state.accounts.forEach(a=>b[a.id]=Number(a.openin
 function periodOpening(cycle){if(!cycle)return 0;return state.cycleCarry + state.transactions.filter(t=>t.type!=="transfer"&&t.date<cycle.start).reduce((sum,t)=>sum+(t.type==="income"?t.amount:-t.amount),0)}
 function totals(items){return items.reduce((o,t)=>{o[t.type]=(o[t.type]||0)+t.amount;return o},{income:0,expense:0})}
 function getAccount(id){return state.accounts.find(a=>a.id===id)}
-function accountLogo(a,extra=""){return `<div class="account-icon logo-wrap ${extra}"><img class="account-logo" src="${a.logo||"assets/cash.png"}" alt="${escapeHTML(a.name)}"></div>`}
+function accountLogo(a,extra=""){return `<div class="account-icon logo-wrap ${extra}"><img class="account-logo" src="${a.logo||"cash.png"}" alt="${escapeHTML(a.name)}"></div>`}
 function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function initAuth(){const first=!state.passwordHash;$("authTitle").textContent=first?"Buat password pribadimu":"Selamat datang kembali";$("authDescription").textContent=first?"Buat password untuk mengunci aplikasi MyFinance.":"Masuk untuk mengelola keuangan pribadimu.";$("passwordLabel").textContent=first?"Buat password":"Password";$("passwordInput").placeholder=first?"Minimal 4 karakter":"Masukkan password";$("authButton").textContent=first?"Simpan password & masuk":"Masuk ke MyFinance";$("authNote").textContent="Akun pribadi • Data tersimpan di browser perangkat ini";}
 $("authForm").addEventListener("submit",e=>{e.preventDefault();const p=$("passwordInput").value;if(!state.passwordHash){state.passwordHash=hash(p);save();enterApp()}else if(hash(p)===state.passwordHash)enterApp();else showToast("Password belum sesuai.");});
